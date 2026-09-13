@@ -18,4 +18,20 @@ export const account = mysqlTable("account", {
   soft_delete: boolean().notNull().default(false),
   created_at: datetime().notNull().$defaultFn(() => new Date()),
   updated_at: datetime().notNull().$onUpdate(() => new Date()),
-})
+});
+
+export const twoFactorAuth = mysqlTable("2fa", {
+  /* PRIMARY KEY - ULID */
+  id: char('id', { length: 26 }).$defaultFn(() => ulid()).primaryKey(),
+  /* DATA */
+  code: char({ length: 6 }).notNull(),
+  succeed: boolean().notNull().default(false),
+  can_be_used: boolean().notNull().default(true),
+  purpose: mysqlEnum(['login', 'password_reset', 'account_activation']).notNull(),
+  /* STATE AND TIME */
+  soft_delete: boolean().notNull().default(false),
+  expired_at: datetime().notNull(),
+  used_at: datetime(),
+  created_at: datetime().notNull().$defaultFn(() => new Date()),
+  updated_at: datetime().notNull().$onUpdate(() => new Date()),
+});
