@@ -1,6 +1,11 @@
+import { relations } from 'drizzle-orm/_relations';
 import { mysqlTable, varchar, char, date, mysqlEnum, boolean, datetime } from 'drizzle-orm/mysql-core';
+import { primaryKey } from 'drizzle-orm/sqlite-core';
 import { ulid } from 'ulid';
 
+/**
+ * ACCOUNT TABLE
+ */
 export const account = mysqlTable("account", {
   /* PRIMARY KEY - ULID */
   id: char('id', { length: 26 }).$defaultFn(() => ulid()).primaryKey(),
@@ -20,9 +25,17 @@ export const account = mysqlTable("account", {
   updated_at: datetime().notNull().$onUpdate(() => new Date()),
 });
 
+export const accountRelations = relations(account, ({ many }) => ({
+  twoFactorAuth: many(twoFactorAuth),
+}));
+
+/**
+ * 2FA TABLE
+ */
 export const twoFactorAuth = mysqlTable("2fa", {
   /* PRIMARY KEY - ULID */
   id: char('id', { length: 26 }).$defaultFn(() => ulid()).primaryKey(),
+  id_account: char('id_account', { length: 26 }).notNull().references(() => account.id),
   /* DATA */
   code: char({ length: 6 }).notNull(),
   succeed: boolean().notNull().default(false),
@@ -35,3 +48,10 @@ export const twoFactorAuth = mysqlTable("2fa", {
   created_at: datetime().notNull().$defaultFn(() => new Date()),
   updated_at: datetime().notNull().$onUpdate(() => new Date()),
 });
+
+export const twoFactorAuthRelations = relations(twoFactorAuth, ({ one }) => ({
+  account: one(account, {
+    fields: [twoFactorAuth.id_account],
+    references: [account.id]
+  }),
+}));
