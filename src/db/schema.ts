@@ -1,6 +1,7 @@
 import { mysqlTable, varchar, char, date, mysqlEnum, boolean, datetime } from 'drizzle-orm/mysql-core';
 import { ulid } from 'ulid';
 
+
 export const account = mysqlTable("account", {
   /* PRIMARY KEY - ULID */
   id: char('id', { length: 26 }).$defaultFn(() => ulid()).primaryKey(),
@@ -9,7 +10,7 @@ export const account = mysqlTable("account", {
   last_name: varchar({ length: 50 }).notNull(),
   birth_date: date().notNull(),
   phone: char({ length: 20 }).notNull(),
-  email: varchar({ length: 50 }).notNull().unique(),
+  email: varchar({ length: 53 }).notNull().unique(),
   password: varchar({ length: 255 }),
   role: mysqlEnum(['admin', 'user']).notNull().default('user'),
   is_active: boolean().notNull().default(false),
@@ -19,6 +20,8 @@ export const account = mysqlTable("account", {
   created_at: datetime().notNull().$defaultFn(() => new Date()),
   updated_at: datetime().notNull().$onUpdate(() => new Date()),
 });
+
+export type Account = typeof account.$inferSelect;
 
 export const twoFactorAuth = mysqlTable("2fa", {
   /* PRIMARY KEY - ULID */
@@ -34,4 +37,8 @@ export const twoFactorAuth = mysqlTable("2fa", {
   used_at: datetime(),
   created_at: datetime().notNull().$defaultFn(() => new Date()),
   updated_at: datetime().notNull().$onUpdate(() => new Date()),
-});
+})
+
+
+
+export type TwoFactorAuth = typeof twoFactorAuth.$inferSelect;

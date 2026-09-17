@@ -1,0 +1,12 @@
+name: test-login-nextjs
+services:
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    ports:
+      - "${PORT_DATABASE}:3306"
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
