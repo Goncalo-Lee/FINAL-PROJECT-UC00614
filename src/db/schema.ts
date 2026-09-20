@@ -1,6 +1,5 @@
 import { relations } from 'drizzle-orm/_relations';
 import { mysqlTable, varchar, char, date, mysqlEnum, boolean, datetime } from 'drizzle-orm/mysql-core';
-import { primaryKey } from 'drizzle-orm/sqlite-core';
 import { ulid } from 'ulid';
 
 /**
@@ -35,6 +34,7 @@ export const accountRelations = relations(account, ({ many }) => ({
 export const twoFactorAuth = mysqlTable("2fa", {
   /* PRIMARY KEY - ULID */
   id: char('id', { length: 26 }).$defaultFn(() => ulid()).primaryKey(),
+  /* FOGERIGN KEY - ULID */
   id_account: char('id_account', { length: 26 }).notNull().references(() => account.id),
   /* DATA */
   code: char({ length: 6 }).notNull(),
@@ -55,3 +55,27 @@ export const twoFactorAuthRelations = relations(twoFactorAuth, ({ one }) => ({
     references: [account.id]
   }),
 }));
+
+/**
+ * LOGIN_ATTEMPT_TABLE
+ */
+export const loginAttempt = mysqlTable("login_attempt", {
+  /* PRIMARY KEY - ULID */
+  id: char('id', { length: 26 }).$defaultFn(() => ulid()).primaryKey(),
+  /* FOGERIGN KEY - ULID */
+  id_account: char('id_account', { length: 26 }).notNull().references(() => account.id),
+  /* DATA */
+  device_fingerprint: varchar({ length: 255 }).notNull(),
+  origin: mysqlEnum(['password', '2fa']).notNull(),
+  success: boolean().notNull(),
+  /* STATE AND TIME */
+  soft_delete: boolean().notNull().default(false),
+  created_at: datetime().notNull().$defaultFn(() => new Date()),
+});
+
+/**
+ * BLOCK TABLE
+ */
+export const block = mysqlTable("block", {
+
+})
