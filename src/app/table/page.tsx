@@ -19,7 +19,7 @@ export default async function Tabela() {
                 <TableRow>
                     <TableHead>First Name</TableHead>
                     <TableHead>Last Name</TableHead>
-                    <TableHead className="w-[100px]">Email</TableHead>
+                    <TableHead className="w-25">Email</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
