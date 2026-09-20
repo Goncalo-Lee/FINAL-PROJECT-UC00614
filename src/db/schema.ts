@@ -2,6 +2,7 @@ import { relations } from 'drizzle-orm/_relations';
 import { mysqlTable, varchar, char, date, mysqlEnum, boolean, datetime } from 'drizzle-orm/mysql-core';
 import { ulid } from 'ulid';
 
+
 /**
  * ACCOUNT TABLE
  */
@@ -13,7 +14,7 @@ export const account = mysqlTable("account", {
   last_name: varchar({ length: 50 }).notNull(),
   birth_date: date().notNull(),
   phone: char({ length: 20 }).notNull(),
-  email: varchar({ length: 50 }).notNull().unique(),
+  email: varchar({ length: 53 }).notNull().unique(),
   password: varchar({ length: 255 }),
   role: mysqlEnum(['admin', 'user']).notNull().default('user'),
   is_active: boolean().notNull().default(false),
@@ -23,6 +24,8 @@ export const account = mysqlTable("account", {
   created_at: datetime().notNull().$defaultFn(() => new Date()),
   updated_at: datetime().notNull().$onUpdate(() => new Date()),
 });
+
+export type Account = typeof account.$inferSelect;
 
 export const accountRelations = relations(account, ({ many }) => ({
   twoFactorAuth: many(twoFactorAuth),
@@ -49,6 +52,8 @@ export const twoFactorAuth = mysqlTable("2fa", {
   updated_at: datetime().notNull().$onUpdate(() => new Date()),
 });
 
+export type TwoFactorAuth = typeof twoFactorAuth.$inferSelect;
+
 export const twoFactorAuthRelations = relations(twoFactorAuth, ({ one }) => ({
   account: one(account, {
     fields: [twoFactorAuth.id_account],
@@ -72,10 +77,3 @@ export const loginAttempt = mysqlTable("login_attempt", {
   soft_delete: boolean().notNull().default(false),
   created_at: datetime().notNull().$defaultFn(() => new Date()),
 });
-
-/**
- * BLOCK TABLE
- */
-export const block = mysqlTable("block", {
-
-})
