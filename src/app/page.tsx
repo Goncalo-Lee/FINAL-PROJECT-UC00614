@@ -1,3 +1,7 @@
+import NavLink from "@/components/layout/NavLink";
+
 export default function HomePage() {
-    return (<div>HomePage</div>)
+  return (
+    <NavLink />
+  )
 }

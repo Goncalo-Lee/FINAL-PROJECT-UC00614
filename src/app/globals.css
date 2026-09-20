@@ -143,3 +143,9 @@ html,
 body {
   height: 100%;
 }
+
+@theme {
+  --color-brand: #3b82f6;
+  --shadow-soft: 0 6px 18px rgba(0, 0, 0, 0.12);
+  --font-serif: Georgia, "Times New Roman", serif;
+}
