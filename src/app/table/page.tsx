@@ -12,7 +12,6 @@ import { getUsers} from "@/server/users";
 export default async function Tabela() {
     const users = await getUsers();
     return (
-        <div>
             <Table>
             <TableCaption>Names of the users.</TableCaption>
             <TableHeader>
@@ -33,5 +32,5 @@ export default async function Tabela() {
 
             </TableBody>
         </Table>
-            </div>)
+    )
 }

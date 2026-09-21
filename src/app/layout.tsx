@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Lora } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import Header from "@/app/header";
+import Footer from "@/app/footer";
+import Head from "@/app/head";
 
 const lora = Lora({subsets:['latin'],variable:'--font-serif'});
 
@@ -26,7 +29,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-serif", lora.variable)}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+
+
+      <main>{children}</main>
+
+
+      <Footer />
+      </body>
     </html>
   );
 }
