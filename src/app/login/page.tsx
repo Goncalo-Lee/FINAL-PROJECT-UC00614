@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import Login from "@/components/auth/Login";
+import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
   return (
@@ -39,8 +40,10 @@ export default function LoginPage() {
                 <span className="flex-1 h-0.75 rounded-full bg-black"></span>
               </div>
               {/* Google */}
-              <button
+              <Button
                 type="button"
+                variant="secondary"
+                size="lg"
                 className="flex w-full h-14 items-center justify-center gap-4 rounded-lg bg-white shadow-soft hover:bg-gray-50 active:scale-[0.99] transition"
               >
                 <svg
@@ -68,7 +71,7 @@ export default function LoginPage() {
                 <span className="text-lg font-semibold text-gray-900">
                   Login with Google
                 </span>
-              </button>
+              </Button>
 
               {/* Terms Text */}
               <p className="text-sm text-gray-500 mt-4">

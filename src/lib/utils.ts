@@ -1,2 +1,7 @@
-//É necessário para o funcionamento do tailwind e de schadn
-export { cn } from "cn"
+// lib/utils.ts
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}

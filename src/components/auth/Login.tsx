@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 export default function Login() {
   const router = useRouter();
@@ -83,20 +84,21 @@ export default function Login() {
 
       {/* Actions */}
       <div className="flex gap-6 pt-2">
-        <button
+        <Button
           type="submit"
           disabled={isLoading}
-          className="flex-1 h-12 rounded-lg bg-brand text-white text-lg font-medium shadow-soft bg-[#4a7de0] active:scale-[0.98] transition disabled:opacity-50 cursor-pointer"
+          className="flex-1"
         >
           {isLoading ? "Logging in..." : "Login"}
-        </button>
-        <button
+        </Button>
+        <Button
           type="button"
           onClick={() => router.push("/signup")}
-          className="flex-1 h-12 rounded-lg bg-white text-gray-900 text-lg font-semibold shadow-soft hover:bg-gray-50 active:scale-[0.98] transition cursor-pointer"
+          variant="secondary"
+          className="flex-1"
         >
           Create Account
-        </button>
+        </Button>
       </div>
     </form>
   );
