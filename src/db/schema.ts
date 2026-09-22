@@ -1,4 +1,4 @@
-import { relations } from 'drizzle-orm/_relations';
+import { relations } from 'drizzle-orm';
 import { mysqlTable, varchar, char, date, mysqlEnum, boolean, datetime } from 'drizzle-orm/mysql-core';
 import { ulid } from 'ulid';
 
@@ -63,7 +63,9 @@ export const twoFactorAuthRelations = relations(twoFactorAuth, ({ one }) => ({
 
 /**
  * LOGIN_ATTEMPT_TABLE
- */
+**/
+
+
 export const loginAttempt = mysqlTable("login_attempt", {
   /* PRIMARY KEY - ULID */
   id: char('id', { length: 26 }).$defaultFn(() => ulid()).primaryKey(),
