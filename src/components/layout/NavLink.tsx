@@ -1,37 +1,68 @@
-"use client";
+"use client"
+
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
+import { HomeIcon } from "../icons/home-icon";
+import { DashboardIcon } from "../icons/dashboard-icon";
 
 export default function NavLink() {
+  const router = useRouter();
+
   return (
-    <nav className="flex flex-row justify-evenly items-center bg-blue-100">
-      {/* Logo */}
-      <div className="flex items-center min-h-24 gap-8">
-        <div className="relative w-12 h-12 shrink-0">
-          <div className="absolute top-0 left-0 w-10 h-10 rounded-lg bg-brand"></div>
-          <div className="absolute bottom-0 right-0 w-6 h-6 rounded-md bg-white shadow-soft"></div>
+    <header className="w-full px-4 py-4 sm:px-8">
+      <nav className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-white/60 bg-blue-200/80 px-6 py-3 shadow-lg shadow-blue-200/50 backdrop-blur-sm sm:px-10">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-4">
+          <div className="relative h-12 w-12 shrink-0">
+            <div className="absolute top-0 left-0 h-10 w-10 rounded-lg bg-blue-500 shadow-md" />
+            <div className="absolute right-0 bottom-0 h-6 w-6 rounded-md bg-white shadow-soft" />
+          </div>
+          <h1 className="font-serif text-3xl font-bold italic sm:text-4xl">
+            Fortis <span className="text-blue-600">Libertas</span>
+          </h1>
+        </Link>
+
+        {/* Nav links */}
+        <ul className="hidden items-center gap-10 md:flex">
+          <li>
+            <Link
+              href="/"
+              className="text-lg font-semibold text-white transition-colors hover:text-blue-800"
+            >
+              <HomeIcon size="lg" variant="secondary" className="mt-2"/>
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/dashboard"
+              className="text-lg font-semibold text-white transition-colors hover:text-blue-800"
+            >
+              <DashboardIcon size="lg" variant="secondary" className="mt-2"/>
+            </Link>
+          </li>
+        </ul>
+
+        {/* Auth buttons */}
+        <div className="flex items-center gap-4">
+          <Button
+            type="button"
+            variant="primary"
+            onClick={() => router.push("/login")}
+            className="rounded-full px-8 py-2"
+          >
+            Login
+          </Button>
+          <Button
+            type="button"
+            variant="primary"
+            onClick={() => router.push("/signup")}
+            className="rounded-full px-8 py-2"
+          >
+            Signup
+          </Button>
         </div>
-        <h1 className="font-serif italic text-4xl font-bold">
-          Fortis <span className="text-blue-500">Libertas</span>
-        </h1>
-      </div>
-
-      {/*  */}
-      <ul>
-        <li>
-          Home
-        </li>
-        <li>
-          Dashboard
-        </li>
-      </ul>
-
-      {/*  */}
-
-      <div>
-        <button>Login</button>
-        <button>Signup</button>
-      </div>
-    </nav>
-  )
+      </nav>
+    </header>
+  );
 }
