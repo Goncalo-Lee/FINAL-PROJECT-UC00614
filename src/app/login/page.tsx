@@ -9,15 +9,16 @@ export default function LoginPage() {
       {/* Left Section */}
       <div className="w-full md:w-1/2 xl:w-2/5 p-8 flex flex-col">
         {/* Header */}
-        <header className="flex items-center min-h-24 gap-8">
+        <Link href="/" className="absolute top-10 left-12 flex items-center gap-4 select-none hover:backdrop-blur-sm hover:bg-white/10 transition-colors duration-300">
           <div className="relative w-12 h-12 shrink-0">
             <div className="absolute top-0 left-0 w-10 h-10 rounded-lg bg-brand"></div>
             <div className="absolute bottom-0 right-0 w-6 h-6 rounded-md bg-white shadow-soft"></div>
           </div>
-          <h1 className="font-serif italic text-4xl font-bold">
-            Fortis <span className="text-blue-500">Libertas</span>
-          </h1>
-        </header>
+          <p className="italic font-serif text-3xl xl:text-4xl leading-none">
+            <span className="font-semibold text-black">Fortis</span>{" "}
+            <span className="font-semibold text-brand">Libertas</span>
+          </p>
+        </Link>
 
         {/* Main Content */}
         <main className="flex flex-1 items-center justify-center">

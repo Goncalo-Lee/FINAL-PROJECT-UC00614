@@ -2,7 +2,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const iconVariants = cva(
-  "stroke-blue-500 hover:stroke-blue-400 active:scale-[0.98]",
+  "stroke-current hover:stroke-current hover:fill-current active:scale-[0.98]",
   {
     variants: {
       variant: {

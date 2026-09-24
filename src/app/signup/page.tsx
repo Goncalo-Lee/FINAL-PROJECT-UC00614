@@ -1,5 +1,6 @@
 import Image from "next/image";
 import SignUp from "@/components/auth/SignUp";
+import Link from "next/link";
 
 export default function SignUpPage() {
   return (
@@ -15,16 +16,21 @@ export default function SignUpPage() {
         />
 
         {/* Logo Overlay */}
-        <div className="absolute top-10 left-12 flex items-center gap-4 select-none">
+        <Link
+          href="/"
+          className="absolute top-10 left-12 flex items-center gap-4 p-2.5 rounded-md select-none hover:backdrop-blur-sm hover:bg-white/10 transition-colors duration-300"
+        >
           <div className="relative w-12 h-12 shrink-0">
             <div className="absolute top-0 left-0 w-10 h-10 rounded-lg bg-brand"></div>
             <div className="absolute bottom-0 right-0 w-6 h-6 rounded-md bg-white shadow-soft"></div>
           </div>
           <p className="italic font-serif text-3xl xl:text-4xl leading-none">
-            <span className="font-semibold text-white">Fortis</span>{" "}
+            <span className="font-semibold text-white">
+              Fortis
+            </span>{" "}
             <span className="font-semibold text-brand">Libertas</span>
           </p>
-        </div>
+        </Link>
       </aside>
 
       {/* Right Section - Content */}

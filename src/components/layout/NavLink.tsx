@@ -28,17 +28,17 @@ export default function NavLink() {
           <li>
             <Link
               href="/"
-              className="text-lg font-semibold text-white transition-colors hover:text-blue-800"
+              className="flex flex-row justify-center items-center gap-x-2.5 text-lg font-semibold text-brand transition-colors hover:bg-brand hover:text-white p-2 rounded-sm"
             >
-              <HomeIcon size="lg" variant="secondary" className="mt-2"/>
+              <HomeIcon size="lg" variant="secondary"/> Home
             </Link>
           </li>
           <li>
             <Link
               href="/dashboard"
-              className="text-lg font-semibold text-white transition-colors hover:text-blue-800"
+              className="flex flex-row justify-center items-center gap-x-2.5 text-lg font-semibold text-brand transition-colors hover:bg-brand hover:text-white p-2 rounded-sm"
             >
-              <DashboardIcon size="lg" variant="secondary" className="mt-2"/>
+              <DashboardIcon size="lg" variant="secondary"/> Dashboard
             </Link>
           </li>
         </ul>
