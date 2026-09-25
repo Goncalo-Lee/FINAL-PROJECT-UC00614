@@ -9,6 +9,12 @@ export const auth = betterAuth({
     provider: "mysql",
     schema: schema,
   }),
+  user: {
+    additionalFields: {
+      fullname: { type: "string", required: true },
+      username: { type: "string", required: true},
+    }
+  },
   emailAndPassword: {
     enabled: true,
   },
