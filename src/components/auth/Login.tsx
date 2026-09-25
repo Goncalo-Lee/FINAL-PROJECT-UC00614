@@ -1,30 +1,17 @@
 "use client";
-
-import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { signInAction } from '@/app/actions/auth';
+
 
 export default function Login() {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
 
-    const formData = new FormData(e.currentTarget);
-    const email = formData.get("email");
-    const password = formData.get("password");
-
-    // TODO: Add your authentication logic here
-    console.log({ email, password });
-
-    setIsLoading(false);
-  };
 
   return (
-    <form className="mt-12 space-y-9" onSubmit={handleSubmit}>
+    <form className="mt-12 space-y-9" action={signInAction}>
       {/* Email */}
       <div className="flex flex-col">
         <label className="block text-lg font-bold text-gray-900" htmlFor="email">
@@ -76,7 +63,7 @@ export default function Login() {
         </label>
         <Link
           href="/forgot-password"
-          className="text-lg font-semibold text-[#f87171] hover:text-white hover:bg-red-400 whitespace-nowrap p-2 cursor-pointer rounded-lg hover:bg-gray-50 active:scale-[0.98] transition"
+          className="text-lg font-semibold text-[#f87171] hover:text-white hover:bg-red-400 whitespace-nowrap p-2 cursor-pointer rounded-lg active:scale-[0.98] transition"
         >
           Forgot Password?
         </Link>
@@ -86,10 +73,9 @@ export default function Login() {
       <div className="flex gap-6 pt-2">
         <Button
           type="submit"
-          disabled={isLoading}
           className="flex-1"
         >
-          {isLoading ? "Logging in..." : "Login"}
+          Login
         </Button>
         <Button
           type="button"
