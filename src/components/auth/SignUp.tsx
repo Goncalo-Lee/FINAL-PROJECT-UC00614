@@ -13,6 +13,8 @@ export default function SignUp() {
     setError(null);
     setIsLoading(true);
 
+    
+
     try {
       const formData = new FormData(e.currentTarget);
       const data = {
@@ -22,8 +24,8 @@ export default function SignUp() {
         password: formData.get("password"),
       };
 
-      // TODO: Add your signup API call here
-      // const response = await fetch("/api/signup", {
+      // TODO: Add your signup3 API call here
+      // const response = await fetch("/api/signup3", {
       //   method: "POST",
       //   headers: { "Content-Type": "application/json" },
       //   body: JSON.stringify(data),

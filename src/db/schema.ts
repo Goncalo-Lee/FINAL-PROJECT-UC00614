@@ -1,81 +1,132 @@
-import { relations } from 'drizzle-orm';
-import { mysqlTable, varchar, char, date, mysqlEnum, boolean, datetime } from 'drizzle-orm/mysql-core';
-import { ulid } from 'ulid';
+import { relations } from "drizzle-orm";
+import {
+    mysqlTable,
+    varchar,
+    text,
+    timestamp,
+    boolean,
+    int,
+    index,
+} from "drizzle-orm/mysql-core";
 
-
-/**
- * ACCOUNT TABLE
- */
-export const account = mysqlTable("account", {
-  /* PRIMARY KEY - ULID */
-  id: char('id', { length: 26 }).$defaultFn(() => ulid()).primaryKey(),
-  /* DATA */
-  first_name: varchar({ length: 50 }).notNull(),
-  last_name: varchar({ length: 50 }).notNull(),
-  birth_date: date().notNull(),
-  phone: char({ length: 20 }).notNull(),
-  email: varchar({ length: 53 }).notNull().unique(),
-  password: varchar({ length: 255 }),
-  role: mysqlEnum(['admin', 'user']).notNull().default('user'),
-  is_active: boolean().notNull().default(false),
-  profile_image: varchar({ length: 255 }),
-  /* STATE AND TIME */
-  soft_delete: boolean().notNull().default(false),
-  created_at: datetime().notNull().$defaultFn(() => new Date()),
-  updated_at: datetime().notNull().$onUpdate(() => new Date()),
+export const user = mysqlTable("user", {
+    id: varchar("id", { length: 36 }).primaryKey(),
+    name: varchar("name", { length: 255 }).notNull(),
+    email: varchar("email", { length: 255 }).notNull().unique(),
+    emailVerified: boolean("email_verified").default(false).notNull(),
+    image: text("image"),
+    createdAt: timestamp("created_at", { fsp: 3 }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { fsp: 3 })
+        .defaultNow()
+        .$onUpdate(() => /* @__PURE__ */ new Date())
+        .notNull(),
+    twoFactorEnabled: boolean("two_factor_enabled").default(false),
 });
 
-export type Account = typeof account.$inferSelect;
+export const session = mysqlTable(
+    "session",
+    {
+        id: varchar("id", { length: 36 }).primaryKey(),
+        expiresAt: timestamp("expires_at", { fsp: 3 }).notNull(),
+        token: varchar("token", { length: 255 }).notNull().unique(),
+        createdAt: timestamp("created_at", { fsp: 3 }).defaultNow().notNull(),
+        updatedAt: timestamp("updated_at", { fsp: 3 })
+            .$onUpdate(() => /* @__PURE__ */ new Date())
+            .notNull(),
+        ipAddress: text("ip_address"),
+        userAgent: text("user_agent"),
+        userId: varchar("user_id", { length: 36 })
+            .notNull()
+            .references(() => user.id, { onDelete: "cascade" }),
+    },
+    (table) => [index("session_userId_idx").on(table.userId)],
+);
 
-export const accountRelations = relations(account, ({ many }) => ({
-  twoFactorAuth: many(twoFactorAuth),
+export const account = mysqlTable(
+    "account",
+    {
+        id: varchar("id", { length: 36 }).primaryKey(),
+        accountId: text("account_id").notNull(),
+        providerId: text("provider_id").notNull(),
+        userId: varchar("user_id", { length: 36 })
+            .notNull()
+            .references(() => user.id, { onDelete: "cascade" }),
+        accessToken: text("access_token"),
+        refreshToken: text("refresh_token"),
+        idToken: text("id_token"),
+        accessTokenExpiresAt: timestamp("access_token_expires_at", { fsp: 3 }),
+        refreshTokenExpiresAt: timestamp("refresh_token_expires_at", { fsp: 3 }),
+        scope: text("scope"),
+        password: text("password"),
+        createdAt: timestamp("created_at", { fsp: 3 }).defaultNow().notNull(),
+        updatedAt: timestamp("updated_at", { fsp: 3 })
+            .$onUpdate(() => /* @__PURE__ */ new Date())
+            .notNull(),
+    },
+    (table) => [index("account_userId_idx").on(table.userId)],
+);
+
+
+
+export const verification = mysqlTable(
+    "verification",
+    {
+        id: varchar("id", { length: 36 }).primaryKey(),
+        identifier: varchar("identifier", { length: 255 }).notNull(),
+        value: text("value").notNull(),
+        expiresAt: timestamp("expires_at", { fsp: 3 }).notNull(),
+        createdAt: timestamp("created_at", { fsp: 3 }).defaultNow().notNull(),
+        updatedAt: timestamp("updated_at", { fsp: 3 })
+            .defaultNow()
+            .$onUpdate(() => /* @__PURE__ */ new Date())
+            .notNull(),
+    },
+    (table) => [index("verification_identifier_idx").on(table.identifier)],
+);
+
+export const twoFactor = mysqlTable(
+    "two_factor",
+    {
+        id: varchar("id", { length: 36 }).primaryKey(),
+        secret: varchar("secret", { length: 255 }).notNull(),
+        backupCodes: text("backup_codes").notNull(),
+        userId: varchar("user_id", { length: 36 })
+            .notNull()
+            .references(() => user.id, { onDelete: "cascade" }),
+        verified: boolean("verified").default(true),
+        failedVerificationCount: int("failed_verification_count").default(0),
+        lockedUntil: timestamp("locked_until", { fsp: 3 }),
+    },
+    (table) => [
+        index("twoFactor_secret_idx").on(table.secret),
+        index("twoFactor_userId_idx").on(table.userId),
+    ],
+);
+
+export const userRelations = relations(user, ({ many }) => ({
+    sessions: many(session),
+    accounts: many(account),
+    twoFactors: many(twoFactor),
 }));
 
-/**
- * 2FA TABLE
- */
-export const twoFactorAuth = mysqlTable("2fa", {
-  /* PRIMARY KEY - ULID */
-  id: char('id', { length: 26 }).$defaultFn(() => ulid()).primaryKey(),
-  /* FOGERIGN KEY - ULID */
-  id_account: char('id_account', { length: 26 }).notNull().references(() => account.id),
-  /* DATA */
-  code: char({ length: 6 }).notNull(),
-  succeed: boolean().notNull().default(false),
-  can_be_used: boolean().notNull().default(true),
-  purpose: mysqlEnum(['login', 'password_reset', 'account_activation']).notNull(),
-  /* STATE AND TIME */
-  soft_delete: boolean().notNull().default(false),
-  expired_at: datetime().notNull(),
-  used_at: datetime(),
-  created_at: datetime().notNull().$defaultFn(() => new Date()),
-  updated_at: datetime().notNull().$onUpdate(() => new Date()),
-});
-
-export type TwoFactorAuth = typeof twoFactorAuth.$inferSelect;
-
-export const twoFactorAuthRelations = relations(twoFactorAuth, ({ one }) => ({
-  account: one(account, {
-    fields: [twoFactorAuth.id_account],
-    references: [account.id]
-  }),
+export const sessionRelations = relations(session, ({ one }) => ({
+    user: one(user, {
+        fields: [session.userId],
+        references: [user.id],
+    }),
 }));
 
-/**
- * LOGIN_ATTEMPT_TABLE
-**/
+export const accountRelations = relations(account, ({ one }) => ({
+    user: one(user, {
+        fields: [account.userId],
+        references: [user.id],
+    }),
+}));
 
+export const twoFactorRelations = relations(twoFactor, ({ one }) => ({
+    user: one(user, {
+        fields: [twoFactor.userId],
+        references: [user.id],
+    }),
+}));
 
-export const loginAttempt = mysqlTable("login_attempt", {
-  /* PRIMARY KEY - ULID */
-  id: char('id', { length: 26 }).$defaultFn(() => ulid()).primaryKey(),
-  /* FOGERIGN KEY - ULID */
-  id_account: char('id_account', { length: 26 }).notNull().references(() => account.id),
-  /* DATA */
-  device_fingerprint: varchar({ length: 255 }).notNull(),
-  origin: mysqlEnum(['password', '2fa']).notNull(),
-  success: boolean().notNull(),
-  /* STATE AND TIME */
-  soft_delete: boolean().notNull().default(false),
-  created_at: datetime().notNull().$defaultFn(() => new Date()),
-});

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Lora } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import React from "react";
+import {Toaster} from "sonner";
 
 const lora = Lora({
   subsets: ["latin"],
@@ -22,8 +23,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Fortis Libertas — Login",
   description: "Secure login for Fortis Libertas",
-  viewport: "width=device-width, initial-scale=1.0",
-  charset: "utf-8",
 };
 
 export default function RootLayout({
@@ -42,9 +41,9 @@ export default function RootLayout({
         "font-serif"
       )}
     >
-      <head />
       <body className="min-h-full flex flex-col bg-gray-50">
         {children}
+        <Toaster />
       </body>
     </html>
   );
