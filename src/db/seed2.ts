@@ -1,5 +1,5 @@
 // src/db/seed2.ts
-import { db } from './index'; // Import your configured db connection
+import { db } from '../index'; // Import your configured db connection
 import { account } from './schema'; // Import the tables you want to seed
 
 async function main() {
