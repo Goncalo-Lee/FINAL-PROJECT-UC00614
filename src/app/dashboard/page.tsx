@@ -18,7 +18,6 @@ export default async function Dashboard() {
             <div className="flex flex-col items-center justify-center h-screen">
                 <h1 className="text-4xl font-bold mb-4">Dashboard</h1>
                 <Logout/>
-            </div>
             <p className="text-center">
                 Two-Factor Authentication Status:{" "}
                 <span className="font-bold">
@@ -37,7 +36,6 @@ export default async function Dashboard() {
                 <span className="font-bold">{session.user.email}</span>
             </p>
 
-            <div className="flex flex-col items-center justify-center h-screen">
                 <Enable2FA session={session}/>
             </div>
         </>
