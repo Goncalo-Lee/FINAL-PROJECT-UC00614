@@ -47,13 +47,13 @@ export default function Enable2FA({ session }: any) {
     window.location.reload();
   };
   return (
-      <div className="flex flex-col items-center justify-center h-screen">
+      <div className="flex flex-col gap-4">
         {!session.user.twoFactorEnabled ? (
             <>
-              <button className="-bg-conic-0" onClick={startEnable2FA}>Ativar 2FA</button>
+              <button className="-bg-conic-0" onClick={startEnable2FA}>Activate 2FA</button>
             </>
         ) : (
-            <p>2FA is already enabled</p>
+            <p>2FA is enabled!</p>
         )}
 
         {step === "qr" && (
