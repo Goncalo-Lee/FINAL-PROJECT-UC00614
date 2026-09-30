@@ -2,7 +2,7 @@ import React from 'react';
 
 function Users() {
     return (
-        <div>Users</div>
+        <div>Aqui podes colocar a tabela para os Users com CRUD</div>
     );
 }
 
