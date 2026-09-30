@@ -6,7 +6,8 @@ import { Resend } from "resend";
 import { ResetPasswordEmail } from "@/components/emails/reset-password";
 import VerificationEmail from "@/components/emails/verification-email";
 import { twoFactor } from "better-auth/plugins";
-import { db } from "@/index";
+import { db } from "@/connection-string";
+import RESEND_ACCOUNT_EMAIL from "dotenv";
 
 // Initialize Resend client for transactional email delivery
 const resend = new Resend(process.env.RESEND_API_KEY as string);
@@ -53,7 +54,7 @@ export const auth = betterAuth({
             await resend.emails.send({
                 from: "Acme <onboarding@resend.dev>",
                 // TODO: Replace hardcoded email with user.email for production
-                to: ["joaoamaral1706@gmail.com"],
+                to: RESEND_ACCOUNT_EMAIL.toString(), // CHANGE TO YOUR EMAIL FROM RESEND
                 subject: "Reset your password",
                 react: ResetPasswordEmail({ username: user.name, resetUrl: url, userEmail: user.email }),
             });

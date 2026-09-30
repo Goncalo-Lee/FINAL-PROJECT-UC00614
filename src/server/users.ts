@@ -1,6 +1,6 @@
 "use server";
 
-import { db } from "@/index";
+import { db } from "@/connection-string";
 import {Account, account} from "@/db/schema";
 import { eq } from "drizzle-orm";
 
