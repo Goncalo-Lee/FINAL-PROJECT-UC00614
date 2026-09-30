@@ -4,6 +4,8 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import React from "react";
 import {Toaster} from "sonner";
+import {ThemeProvider} from "next-themes";
+import {ActiveThemeProvider} from "@/components/active-theme";
 
 const lora = Lora({
   subsets: ["latin"],
@@ -42,8 +44,12 @@ export default function RootLayout({
       )}
     >
       <body className="min-h-full flex flex-col bg-gray-50">
-        {children}
-        <Toaster />
+      <ThemeProvider>
+        <ActiveThemeProvider>
+          {children}
+        </ActiveThemeProvider>
+      </ThemeProvider>
+
       </body>
     </html>
   );
