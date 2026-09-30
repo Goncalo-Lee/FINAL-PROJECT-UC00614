@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import React from "react";
 import {Toaster} from "sonner";
 import {ThemeProvider} from "next-themes";
-import {ActiveThemeProvider} from "@/components/active-theme";
 
 const lora = Lora({
   subsets: ["latin"],
@@ -34,7 +33,7 @@ export default function RootLayout({
 }) {
   return (
     <html
-      lang="en"
+      lang="en" suppressHydrationWarning
       className={cn(
         "h-full antialiased",
         geistSans.variable,
@@ -45,9 +44,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-gray-50">
       <ThemeProvider>
-        <ActiveThemeProvider>
           {children}
-        </ActiveThemeProvider>
       </ThemeProvider>
 
       </body>
