@@ -45,3 +45,6 @@ mysql_data/
 
 #IDE - Web Strom
 .idea/
+
+# Drizzle
+/Drizzle
