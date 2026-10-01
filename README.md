@@ -1,4 +1,4 @@
-# Nome do Projeto
+# Fortis Libertas Authentication System
 
 Projeto base com **Next.js**, **Better Auth** e **Drizzle ORM**, usando **MySQL** em **Docker**.
 
