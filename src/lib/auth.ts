@@ -6,7 +6,7 @@ import { Resend } from "resend";
 import { ResetPasswordEmail } from "@/components/emails/reset-password";
 import VerificationEmail from "@/components/emails/verification-email";
 import { twoFactor } from "better-auth/plugins";
-import { db } from "@/connection-string";
+import { db } from "@/database";
 import RESEND_ACCOUNT_EMAIL from "dotenv";
 
 // Initialize Resend client for transactional email delivery

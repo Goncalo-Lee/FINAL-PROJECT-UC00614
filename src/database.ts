@@ -9,5 +9,3 @@ const poolConnection = mysql.createPool(process.env.DATABASE_URL!);
 
 // 2. Pass the pool object to drizzle
 export const db = drizzle({client: poolConnection});
-
-// MAY BE NECESSARY IN THE FUTURE

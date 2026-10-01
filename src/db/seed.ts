@@ -19,7 +19,13 @@ async function main() {
 
     // Seeding the tables
     // Se adicionares um terceiro parametro em chave "{ quantidade }", ele vai seedar para cada tabela essa quantidade
-    await seed(db, schema);
+    await seed(db, {
+        user: schema.user,
+        session: schema.session,
+        account: schema.account,
+        twoFactor: schema.twoFactor,
+    });
+
 
     console.log("Base de dados povoada com sucesso!");
 

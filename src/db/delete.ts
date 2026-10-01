@@ -21,11 +21,10 @@ async function main() {
 
 
     // DELETE THE TABLES
-    await db.delete(schema.account);
-    await db.delete(schema.twoFactorAuth);
+    await db.delete(schema.user);
 
 
-    console.log("Data on the tables deleted with success!!!");
+    console.log("Data on the user table deleted with success!!!");
     await connection.end();
 }
 main();
