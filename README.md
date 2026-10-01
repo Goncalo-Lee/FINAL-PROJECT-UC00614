@@ -72,11 +72,23 @@ A aplicação fica disponível em [http://localhost:3000](http://localhost:3000)
 ## Guia Rápido de Configuração das Chaves
 
 ### 1. Gerar o `BETTER_AUTH_SECRET`
+
 É a chave criptográfica usada pelo Better Auth para assinar e proteger cookies e tokens de sessão.
-- **Passo 1:** No terminal, corre:
-  ```bash
-  openssl rand -base64 32
-  ```
+
+- **Passo 1:** Corre o comando correspondente ao teu sistema:
+  - **Linux / macOS / Git Bash:**
+    ```bash
+    openssl rand -base64 32
+    ```
+  - **Windows (PowerShell):**
+    ```powershell
+    [Convert]::ToBase64String((1..32 | ForEach-Object { Get-Random -Minimum 0 -Maximum 256 } | ForEach-Object { [byte]$_ }))
+    ```
+  - **Qualquer SO (via Node.js):**
+    ```bash
+    node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+    ```
+    
 - **Passo 2:** Copia o valor gerado e cola na variável `BETTER_AUTH_SECRET` no teu ficheiro `.env`.
 
 ### 2. Obter Credenciais Google OAuth (`GOOGLE_CLIENT_ID` e `SECRET`)
