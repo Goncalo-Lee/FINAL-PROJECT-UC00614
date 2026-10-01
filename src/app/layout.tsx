@@ -42,12 +42,9 @@ export default function RootLayout({
         "font-serif"
       )}
     >
-      <body className="min-h-full flex flex-col bg-gray-50">
-      <ThemeProvider>
-          {children}
-      </ThemeProvider>
-
-      </body>
+    <body>
+      {children}
+    </body>
     </html>
   );
 }

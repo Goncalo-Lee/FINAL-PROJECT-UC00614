@@ -1,53 +1,102 @@
 "use server";
 
 import { db } from "@/database";
-import {Account, account} from "@/db/schema";
+import { user } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
+export type User = typeof user.$inferSelect;
+export type NewUser = typeof user.$inferInsert;
 
-// CRUD - CREATE, READ, UPDATE, DELETE
+// READ ALL
 export async function getUsers() {
     try {
-        const allUsers = await db.select().from(account);
-        return allUsers;
+        const allUsers = await db.select().from(user);
+        return { data: allUsers };
     } catch (error) {
-        console.error(error);
-        throw {error: "Failed to get users."};
+        console.error("getUsers error:", error);
+        return { error: "Failed to get users." };
     }
 }
 
-export async function createUser(user: Account) {
-    try {
-        const newUser = await db.insert(account).values(user);
-        return newUser;
-    } catch (error) {
-        console.error(error);
-        return {error: "Failed to create user."};
-    }
-}
-
-export async function updateUser(user: Account) {
-    try {
-        const updateUser = await db.update(account).set(user).where(eq(account.id, user.id));
-        return updateUser;
-    } catch (error) {
-        console.error(error);
-        return {error: "Failed to update user."};
-    }
-}
-
-export async function deleteUser(user: Account) {
-    try {
-        const deleteUser = await db.delete(account).where(eq(account.id, user.id));
-        return deleteUser;
-    } catch (error) {
-        console.error(error);
-        return {error: "Failed to delete user."};
-    }
-}
-
-// OUTROS
+// READ ONE
 export async function getUserById(id: number) {
-    const userById = await db.select().from(account);
-    return userById;
+    try {
+        const [foundUser] = await db
+            .select()
+            .from(user)
+            .where(eq(user.id, id))
+            .limit(1);
+
+        if (!foundUser) {
+            return { error: "User not found." };
+        }
+
+        return { data: foundUser };
+    } catch (error) {
+        console.error("getUserById error:", error);
+        return { error: "Failed to find user." };
+    }
+}
+
+// CREATE
+export async function createUser(data: NewUser) {
+    try {
+        const [result] = await db.insert(user).values(data);
+
+        // In MySQL, fetch the record using the generated insertId
+        const createdId = result.insertId;
+        const [newUser] = await db
+            .select()
+            .from(user)
+            .where(eq(user.id, createdId))
+            .limit(1);
+
+        return { data: newUser };
+    } catch (error) {
+        console.error("createUser error:", error);
+        return { error: "Failed to create user." };
+    }
+}
+
+// UPDATE
+export async function updateUser(id: number, data: Partial<NewUser>) {
+    try {
+        const [result] = await db
+            .update(user)
+            .set(data)
+            .where(eq(user.id, id));
+
+        if (result.affectedRows === 0) {
+            return { error: "User not found or no changes made." };
+        }
+
+        const [updatedUser] = await db
+            .select()
+            .from(user)
+            .where(eq(user.id, id))
+            .limit(1);
+
+        return { data: updatedUser };
+    } catch (error) {
+        console.error("updateUser error:", error);
+        return { error: "Failed to update user." };
+    }
+}
+
+// DELETE
+export async function deleteUser(id: number) {
+    try {
+        const [result] = await db
+            .delete(user)
+            .where(eq(user.id, id));
+
+        if (result.affectedRows === 0) {
+            return { error: "User not found." };
+        }
+
+        return { success: true };
+    } catch (error) {
+        console.error("deleteUser error:", error);
+        return { error: "Failed to delete user." };
+    }
 }

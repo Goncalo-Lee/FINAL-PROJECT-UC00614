@@ -1,17 +1,19 @@
 import React from 'react';
-import {DataTable} from "@/components/data-table";
-import data from "@/app/dashboard/data.json";
+import {DataTableUsers} from "@/components/data-table-users";
+import { getUsers} from '@/server/users'
 
-function Users() {
+export default async function Users() {
+    const users = await getUsers();
+
+    // PASSING THE OBJECT TO AN ARRAY
+    const usersList = users.data ?? []; // ou response.users ?? []
+
     return (
+
         <div>
-            Aqui podes colocar a tabela para os Users com CRUD
-            <DataTable data={data} />
-
-
+            Tabela de Users
+            <DataTableUsers users={usersList}/>
         </div>
-
     );
 }
 
-export default Users;
