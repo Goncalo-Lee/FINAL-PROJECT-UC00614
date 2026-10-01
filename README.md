@@ -14,9 +14,12 @@ Projeto base com **Next.js**, **Better Auth** e **Drizzle ORM**, usando **MySQL*
 
 - Node.js e npm
 - Docker e Docker Compose
-- Conta no Resend (necessária para verificação de email e recuperação de password)
+- Conta no [Resend](https://resend.com/)
+- Conta no [Google Cloud Console](https://console.cloud.google.com/)
 
-## Instalação
+---
+
+## Instalação e Execução
 
 ### 1. Instalar as dependências
 
@@ -24,13 +27,25 @@ Projeto base com **Next.js**, **Better Auth** e **Drizzle ORM**, usando **MySQL*
 npm install
 ```
 
-Instala todas as dependências necessárias para o projeto correr.
-
 ### 2. Configurar as variáveis de ambiente
 
-Cria/edita o ficheiro `.env` e ajusta os valores conforme pretendido (nome da base de dados, credenciais, etc.).
+Cria um ficheiro `.env` na raiz do projeto com base no seguinte modelo:
 
-O projeto usa **MySQL** e **Docker**, por isso garante que as variáveis da base de dados coincidem com as definidas no `docker-compose.yml`.
+```env
+# Database
+DATABASE_URL="mysql://root:password@localhost:3306/fortis_libertas"
+
+# Better Auth
+BETTER_AUTH_SECRET="o_teu_secret_gerado"
+BETTER_AUTH_URL="http://localhost:3000"
+
+# Google OAuth
+GOOGLE_CLIENT_ID="o_teu_google_client_id"
+GOOGLE_CLIENT_SECRET="o_teu_google_client_secret"
+
+# Resend
+RESEND_API_KEY="re_123456789"
+```
 
 ### 3. Levantar os containers
 
@@ -38,15 +53,11 @@ O projeto usa **MySQL** e **Docker**, por isso garante que as variáveis da base
 docker-compose up -d
 ```
 
-Cria e inicia os containers no Docker, incluindo a base de dados MySQL com o nome definido nas variáveis de ambiente.
-
 ### 4. Criar as tabelas na base de dados
 
 ```bash
 npx drizzle-kit push
 ```
-
-Faz uma migração rápida, criando as tabelas diretamente na base de dados. Ideal para prototipagem e desenvolvimento.
 
 ### 5. Arrancar o projeto
 
@@ -56,26 +67,54 @@ npm run dev
 
 A aplicação fica disponível em [http://localhost:3000](http://localhost:3000).
 
-## Verificação de email e recuperação de password
+---
 
-Para usar estas funcionalidades é necessário configurar o **Resend**:
+## Guia Rápido de Configuração das Chaves
 
-1. Criar uma conta no [Resend](https://resend.com/).
-2. Gerar uma API key e colocá-la nas variáveis de ambiente.
-3. No ficheiro `auth.ts`, alterar o campo `to` para o email registado no Resend:
+### 1. Gerar o `BETTER_AUTH_SECRET`
+É a chave criptográfica usada pelo Better Auth para assinar e proteger cookies e tokens de sessão.
+- **Passo 1:** No terminal, corre:
+  ```bash
+  openssl rand -base64 32
+  ```
+- **Passo 2:** Copia o valor gerado e cola na variável `BETTER_AUTH_SECRET` no teu ficheiro `.env`.
 
-```ts
-to: "maildoresend"
-```
+### 2. Obter Credenciais Google OAuth (`GOOGLE_CLIENT_ID` e `SECRET`)
+- **Passo 1:** No [Google Cloud Console](https://console.cloud.google.com/), cria um projeto e configura o ecrã de consentimento OAuth (*APIs e Serviços > Ecrã de consentimento*).
+- **Passo 2:** Vai a *Credenciais > Criar Credenciais > ID do cliente OAuth* e escolhe **Aplicação Web**.
+- **Passo 3:** Em **URIs de redirecionamento autorizados**, adiciona `http://localhost:3000/api/auth/callback/google`, cria e copia o ID e o Secret para o `.env`.
 
-> Sem esta configuração, os emails de verificação e de recuperação de password não serão enviados.
+### 3. Obter a Resend API Key (`RESEND_API_KEY`)
+- **Passo 1:** Entra em [Resend.com](https://resend.com/) e acede a **API Keys** no menu lateral.
+- **Passo 2:** Clica em **Create API Key**, copia a chave gerada e define-a na variável `RESEND_API_KEY`.
+- **Passo 3:** Em desenvolvimento, envia apenas emails para o endereço associado à tua conta Resend usando `onboarding@resend.dev` como remetente.
 
-## Resumo rápido
+---
+
+## Resolução de Problemas (Troubleshooting)
+
+Se os containers falharem ao levantar, ocorrerem conflitos de porta ou erros de permissão com o MySQL antes de criar a base de dados:
 
 ```bash
+# Para os containers e apaga os volumes com dados antigos
+docker-compose down -v
+
+# Levanta novamente a base de dados limpa
+docker-compose up -d
+
+# Empurra o schema outra vez
+npx drizzle-kit push
+```
+
+---
+
+## Resumo para um script rápido
+
+# 1. Configurar as variáveis de ambiente
+cp .env.example .env
+
+# 2. Instalar dependências e levantar serviços
 npm install
-# configurar o .env
 docker-compose up -d
 npx drizzle-kit push
 npm run dev
-```
