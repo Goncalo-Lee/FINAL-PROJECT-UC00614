@@ -14,7 +14,7 @@ export function SiteHeader() {
         />
         <h1 className="text-base font-medium">Dashboard</h1>
       </div>
-        <ModeToggle />
+        {/*<ModeToggle /> */}
     </header>
   )
 }

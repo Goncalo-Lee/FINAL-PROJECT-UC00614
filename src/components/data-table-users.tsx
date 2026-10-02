@@ -1,5 +1,6 @@
 "use client";
 
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -13,7 +14,6 @@ import { DialogEditUsers } from "@/components/dialog-edit-users";
 import { Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { deleteUser, updateUser } from "@/server/users";
-import React, {useState} from "react";
 
 export interface UserItem {
   id: string;
@@ -32,61 +32,31 @@ export function DataTableUsers({
                                  onEdit,
                                  onDelete,
                                }: DataTableUsersProps) {
-
-
-
-
-
   const userList = Array.isArray(users) ? users : [];
-  // useState to change to a different user
   const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
-  // UseState to open and close dialog
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const handleOpenEdit = (user: UserItem) => {
     setSelectedUser(user);
     setIsEditDialogOpen(true);
-  }
-
-  const handleUpdate = async (user: UserItem) => {
-    const userId = parseInt(user.id);
-
-    const res = await updateUser(userId, {
-      name: user.name,
-      email: user.email,
-    })
-
-    if (
-        res.success
-    ) {
-      if (res.success) {
-        toast.success("User updated successfully.");
-        await new Promise((r) => setTimeout(r, 2500));
-        location.reload()
-      }
-      else {
-        toast.error("Failed to update user. Please try again.");
-      }
-    }
-  }
-
-
-
+    onEdit?.(user);
+  };
 
   const handleDelete = async (id: string) => {
-    window.confirm("Are you sure you want to delete this user?");
+    const confirmed = window.confirm("Are you sure you want to delete this user?");
+    if (!confirmed) return;
 
-    const res = await deleteUser(id)
+    const res = await deleteUser(id);
 
     if (res.success) {
       toast.success("User deleted successfully.");
       await new Promise((r) => setTimeout(r, 2500));
-
-      location.reload()
-    }
-    else {
+      location.reload();
+    } else {
       toast.error("Failed to delete user. Please try again.");
     }
+
+    onDelete?.(id);
   };
 
   return (
@@ -95,7 +65,7 @@ export function DataTableUsers({
           <Button>Add User</Button>
         </div>
         <div className="rounded-md border bg-card">
-          <Table >
+          <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[180px]">Id</TableHead>
@@ -133,10 +103,9 @@ export function DataTableUsers({
                                 onClick={() => handleOpenEdit(user)}
                                 title="Edit"
                             >
-                              <Pencil className="h-4 w-4"/>
+                              <Pencil className="h-4 w-4" />
                               <span className="sr-only">Edit {user.name}</span>
                             </Button>
-
 
                             <Button
                                 variant="ghost"
@@ -145,7 +114,7 @@ export function DataTableUsers({
                                 onClick={() => handleDelete(user.id)}
                                 title="Delete"
                             >
-                              <Trash2 className="h-4 w-4"/>
+                              <Trash2 className="h-4 w-4" />
                               <span className="sr-only">Delete {user.name}</span>
                             </Button>
                           </div>
@@ -156,6 +125,7 @@ export function DataTableUsers({
             </TableBody>
           </Table>
         </div>
+
         <DialogEditUsers
             user={selectedUser}
             open={isEditDialogOpen}

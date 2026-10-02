@@ -11,7 +11,9 @@ import {
 import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import type { UserItem } from "./DataTableUsers"
+import type { UserItem } from "./data-table-users"
+import {updateUser} from "@/server/users";
+import {toast} from "sonner";
 
 interface DialogEditUsersProps {
     user: UserItem | null;
@@ -26,7 +28,7 @@ export function DialogEditUsers({
                                     onOpenChange,
                                     onSuccess,
                                 }: DialogEditUsersProps) {
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const formData = new FormData(e.currentTarget)
         const name = formData.get("name") as string
@@ -34,6 +36,15 @@ export function DialogEditUsers({
 
         // Save logic here
         console.log({ id: user?.id, name, email })
+
+        const res = await updateUser(user.id, { name, email });
+
+        if (res.error) {
+            toast.error("Something went wrong. Please try again later.")
+        }
+        else {
+            toast.success("User updated successfully.")
+        }
 
         onSuccess?.()
         onOpenChange(false)
@@ -46,7 +57,7 @@ export function DialogEditUsers({
                     <DialogHeader>
                         <DialogTitle>Edit user</DialogTitle>
                         <DialogDescription>
-                            Make changes to the user profile here.
+                            Make changes to the user here.
                         </DialogDescription>
                     </DialogHeader>
 
