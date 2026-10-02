@@ -49,6 +49,8 @@ export const auth = betterAuth({
     // Credentials-based auth (email + password)
     emailAndPassword: {
         enabled: true,
+        minPasswordLength: 8,
+        maxPasswordLength: 32,
         // Triggered when a password reset is requested
         sendResetPassword: async ({ user, url }) => {
             await resend.emails.send({
