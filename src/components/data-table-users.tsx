@@ -9,10 +9,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { DialogEditUsers } from "@/components/dialog-edit-users";
 import { Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import {deleteUser} from "@/server/users";
-import {updateUser} from "@/server/users";
+import { deleteUser, updateUser } from "@/server/users";
 import React, {useState} from "react";
 
 export interface UserItem {
@@ -32,15 +32,46 @@ export function DataTableUsers({
                                  onEdit,
                                  onDelete,
                                }: DataTableUsersProps) {
-  console.log("Value:", users);
-  console.log("Is array?", Array.isArray(users));
+
+
+
 
 
   const userList = Array.isArray(users) ? users : [];
+  // useState to change to a different user
+  const [selectedUser, setSelectedUser] = useState<UserItem | null>(null);
+  // UseState to open and close dialog
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
-  const handleEdit = async (user: UserItem) => {
-
+  const handleOpenEdit = (user: UserItem) => {
+    setSelectedUser(user);
+    setIsEditDialogOpen(true);
   }
+
+  const handleUpdate = async (user: UserItem) => {
+    const userId = parseInt(user.id);
+
+    const res = await updateUser(userId, {
+      name: user.name,
+      email: user.email,
+    })
+
+    if (
+        res.success
+    ) {
+      if (res.success) {
+        toast.success("User updated successfully.");
+        await new Promise((r) => setTimeout(r, 2500));
+        location.reload()
+      }
+      else {
+        toast.error("Failed to update user. Please try again.");
+      }
+    }
+  }
+
+
+
 
   const handleDelete = async (id: string) => {
     window.confirm("Are you sure you want to delete this user?");
@@ -61,7 +92,7 @@ export function DataTableUsers({
   return (
       <div className="w-full space-y-4">
         <div className="text-right">
-          <Button>Adicionar utilizador</Button>
+          <Button>Add User</Button>
         </div>
         <div className="rounded-md border bg-card">
           <Table >
@@ -99,7 +130,7 @@ export function DataTableUsers({
                                 variant="ghost"
                                 size="icon"
                                 className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                                onClick={() => handleEdit(user)}
+                                onClick={() => handleOpenEdit(user)}
                                 title="Edit"
                             >
                               <Pencil className="h-4 w-4"/>
@@ -125,6 +156,12 @@ export function DataTableUsers({
             </TableBody>
           </Table>
         </div>
+        <DialogEditUsers
+            user={selectedUser}
+            open={isEditDialogOpen}
+            onOpenChange={setIsEditDialogOpen}
+            onSuccess={() => location.reload()}
+        />
       </div>
   );
 }
