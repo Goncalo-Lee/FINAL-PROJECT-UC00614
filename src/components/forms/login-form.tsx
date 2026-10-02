@@ -55,10 +55,26 @@ export function LoginForm({
 
     // Handles social login via Google using Better Auth client SDK
     const signInWithGoogle = async () => {
-        await authClient.signIn.social({
-            provider: "google",
-        });
-        router.push("/dashboard");
+        setIsLoading(true);
+        try {
+            const res = await authClient.signIn.social({
+                provider: "google",
+                mode: "popup",
+                redirectTo: "/dashboard",
+            });
+
+            if (res?.error) {
+                toast.error(res.error.message || "Sign-in failed");
+            } else {
+                toast.success("Signed in successfully!");
+
+                router.push("/dashboard");
+            }
+        } catch (err) {
+            toast.error("An unexpected error occurred");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     // Submits email/password to the server and handles normal vs 2FA routing
