@@ -10,6 +10,10 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Pencil, Trash2 } from "lucide-react";
+import { toast } from "sonner";
+import {deleteUser} from "@/server/users";
+import {updateUser} from "@/server/users";
+import React, {useState} from "react";
 
 export interface UserItem {
   id: string;
@@ -23,28 +27,44 @@ interface DataTableUsersProps {
   onDelete?: (id: string) => void;
 }
 
-export function DataTableUsers({ users }: DataTableUsersProps) {
+export function DataTableUsers({
+                                 users,
+                                 onEdit,
+                                 onDelete,
+                               }: DataTableUsersProps) {
   console.log("Value:", users);
   console.log("Is array?", Array.isArray(users));
 
+
   const userList = Array.isArray(users) ? users : [];
 
+  const handleEdit = async (user: UserItem) => {
 
+  }
 
-  const handleEdit = (user: UserItem) => {
-    if (onEdit) return onEdit(user);
-    console.log("Editing user:", user);
-  };
+  const handleDelete = async (id: string) => {
+    window.confirm("Are you sure you want to delete this user?");
 
-  const handleDelete = (id: string) => {
-    if (onDelete) return onDelete(id);
-    console.log("Deleting user ID:", id);
+    const res = await deleteUser(id)
+
+    if (res.success) {
+      toast.success("User deleted successfully.");
+      await new Promise((r) => setTimeout(r, 2500));
+
+      location.reload()
+    }
+    else {
+      toast.error("Failed to delete user. Please try again.");
+    }
   };
 
   return (
       <div className="w-full space-y-4">
+        <div className="text-right">
+          <Button>Adicionar utilizador</Button>
+        </div>
         <div className="rounded-md border bg-card">
-          <Table>
+          <Table >
             <TableHeader>
               <TableRow>
                 <TableHead className="w-[180px]">Id</TableHead>
@@ -54,9 +74,12 @@ export function DataTableUsers({ users }: DataTableUsersProps) {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.length === 0 ? (
+              {userList.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
+                    <TableCell
+                        colSpan={4}
+                        className="h-24 text-center text-muted-foreground"
+                    >
                       No records found.
                     </TableCell>
                   </TableRow>
@@ -67,7 +90,9 @@ export function DataTableUsers({ users }: DataTableUsersProps) {
                           {user.id}
                         </TableCell>
                         <TableCell className="font-medium">{user.name}</TableCell>
-                        <TableCell className="text-muted-foreground">{user.email}</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {user.email}
+                        </TableCell>
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-1">
                             <Button
@@ -77,9 +102,10 @@ export function DataTableUsers({ users }: DataTableUsersProps) {
                                 onClick={() => handleEdit(user)}
                                 title="Edit"
                             >
-                              <Pencil className="h-4 w-4" />
+                              <Pencil className="h-4 w-4"/>
                               <span className="sr-only">Edit {user.name}</span>
                             </Button>
+
 
                             <Button
                                 variant="ghost"
@@ -88,7 +114,7 @@ export function DataTableUsers({ users }: DataTableUsersProps) {
                                 onClick={() => handleDelete(user.id)}
                                 title="Delete"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-4 w-4"/>
                               <span className="sr-only">Delete {user.name}</span>
                             </Button>
                           </div>

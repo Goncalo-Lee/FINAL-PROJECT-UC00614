@@ -24,7 +24,7 @@ async function main() {
         session: schema.session,
         account: schema.account,
         twoFactor: schema.twoFactor,
-    });
+    }, {count:50});
 
 
     console.log("Base de dados povoada com sucesso!");

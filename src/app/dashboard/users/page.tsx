@@ -11,7 +11,7 @@ export default async function Users() {
     return (
 
         <div>
-            Tabela de Users
+            <h1 className="text-3xl text-center">Tabela de Utilizadores</h1>
             <DataTableUsers users={usersList}/>
         </div>
     );
